@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .time {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+        button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 1em;
+        }
+        .laps {
+            list-style: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stopwatch</h1>
+        <div class="time" id="display">00:00:00</div>
+        <button onclick="startStop()">Start</button>
+        <button onclick="reset()">Reset</button>
+        <button onclick="lap()">Lap</button>
+        <ul class="laps" id="laps"></ul>
+    </div>
+
+    <script>
+        let timer;
+        let isRunning = false;
+        let startTime;
+        let elapsedTime = 0;
+        let laps = [];
+
+        function startStop() {
+            if (isRunning) {
+                clearInterval(timer);
+                isRunning = false;
+            } else {
+                startTime = Date.now() - elapsedTime;
+                timer = setInterval(updateTime, 1000);
+                isRunning = true;
+            }
+        }
+
+        function updateTime() {
+            elapsedTime = Date.now() - startTime;
+            let totalSeconds = Math.floor(elapsedTime / 1000);
+            let hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+            let minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            let seconds = String(totalSeconds % 60).padStart(2, '0');
+            document.getElementById("display").innerText = ${hours}:${minutes}:${seconds};
+        }
+
+        function reset() {
+            clearInterval(timer);
+            isRunning = false;
+            elapsedTime = 0;
+            document.getElementById("display").innerText = "00:00:00";
+            document.getElementById("laps").innerHTML = "";
+            laps = [];
+        }
+
+        function lap() {
+            if (isRunning) {
+                let lapTime = document.getElementById("display").innerText;
+                laps.push(lapTime);
+                let lapItem = document.createElement("li");
+                lapItem.innerText = Lap ${laps.length}: ${lapTime};
+                document.getElementById("laps").appendChild(lapItem);
+            }
+        }
+    </script>
+</body>
+</html>
